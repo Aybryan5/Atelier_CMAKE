@@ -101,6 +101,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: Compilation
     steps:
+    
+      - name: Build
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make
+
       - name: Test fonction car
         run: |
           last_directory=$(basename ${{ runner.workspace }})
@@ -118,7 +126,7 @@ jobs:
           echo "== Test car 5 ==" > carreport.txt
           ./src/calculator car 5 | tee -a carreport.txt
           echo "Exit code: $?" >> carreport.txt
-          
+
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:
