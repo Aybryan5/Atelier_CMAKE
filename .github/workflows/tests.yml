@@ -110,7 +110,24 @@ jobs:
           cd build
           cmake ..
           make
-          ./src/calculator car 5
+          echo "== Test car 5 ==" > carreport.txt
+          ./src/calculator car 5 | tee -a carreport.txt
+          echo "Exit code: $?" >> carreport.txt
+        
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-car-report
+          path: build/carreport.txt      # <-- le fichier à récupérer
+          retention-days: 14          # optionnel
+
+      - name: Job summary (facultatif mais pratique)
+        run: |
+          echo "### Résultat du test *Car*" >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat build/carreport.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
   Deploy:
     runs-on: ubuntu-latest
